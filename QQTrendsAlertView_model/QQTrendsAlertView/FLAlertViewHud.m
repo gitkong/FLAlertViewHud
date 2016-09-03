@@ -4,7 +4,7 @@
 //
 //  Created by clarence on 16/9/2.
 //  Copyright © 2016年 clarence. All rights reserved.
-//
+//  思路解释 ：http://www.jianshu.com/p/ca59771ee382
 
 #import "FLAlertViewHud.h"
 #define FLScreenHeight [UIScreen mainScreen].bounds.size.height

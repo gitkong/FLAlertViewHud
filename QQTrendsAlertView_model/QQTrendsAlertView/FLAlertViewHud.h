@@ -4,7 +4,7 @@
 //
 //  Created by clarence on 16/9/2.
 //  Copyright © 2016年 clarence. All rights reserved.
-//
+//  思路解释：http://www.jianshu.com/p/ca59771ee382 欢迎关注我啦
 
 #import <UIKit/UIKit.h>
 // 修改弹窗的高度，内部自适应
