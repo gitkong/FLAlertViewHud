@@ -75,7 +75,8 @@ static NSString * resueId = @"id";
                      [FLAlertViewModel fl_alertViewModelWithTitleName:@"转载照片" leftImageName:@"Snip20160903_6"],
                      [FLAlertViewModel fl_alertViewModelWithTitleName:@"隐藏此条动态" leftImageName:@"Snip20160903_7"],
                      [FLAlertViewModel fl_alertViewModelWithTitleName:@"不看他的动态" leftImageName:@"Snip20160903_8"],
-                     [FLAlertViewModel fl_alertViewModelWithTitleName:@"收藏" leftImageName:@"Snip20160903_9"]
+                     [FLAlertViewModel fl_alertViewModelWithTitleName:@"收藏" leftImageName:@"Snip20160903_9"],
+                     @""
                      ];
     
     [[FLAlertViewHud shareAlertViewHud] fl_showAround:btn

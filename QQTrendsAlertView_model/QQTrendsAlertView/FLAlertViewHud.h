@@ -86,7 +86,7 @@ typedef enum{
  *  @param y   指定的y值
  *  @param arr 模型数组
  */
-- (void)fl_show:(CGFloat)y arr:(NSArray<NSDictionary *> *)arr;
+- (void)fl_show:(CGFloat)y arr:(NSArray<FLAlertViewModel *> *)arr;
 
 /**
  *  @author 孔凡列, 16-09-03 01:09:16
@@ -104,7 +104,7 @@ typedef enum{
  *  @param view 指定的view
  *  @param arr  模型数组
  */
-- (void)fl_showAround:(UIView *)view arr:(NSArray<NSDictionary *> *)arr;
+- (void)fl_showAround:(UIView *)view arr:(NSArray<FLAlertViewModel *> *)arr;
 /**
  *  @author 孔凡列, 16-09-03 06:09:16
  *

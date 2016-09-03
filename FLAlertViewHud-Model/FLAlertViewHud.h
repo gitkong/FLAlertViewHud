@@ -4,7 +4,7 @@
 //
 //  Created by clarence on 16/9/2.
 //  Copyright © 2016年 clarence. All rights reserved.
-//
+//  思路解释：http://www.jianshu.com/p/ca59771ee382 欢迎关注我啦
 
 #import <UIKit/UIKit.h>
 // 修改弹窗的高度，内部自适应
@@ -86,7 +86,7 @@ typedef enum{
  *  @param y   指定的y值
  *  @param arr 模型数组
  */
-- (void)fl_show:(CGFloat)y arr:(NSArray<NSDictionary *> *)arr;
+- (void)fl_show:(CGFloat)y arr:(NSArray<FLAlertViewModel *> *)arr;
 
 /**
  *  @author 孔凡列, 16-09-03 01:09:16
@@ -104,7 +104,7 @@ typedef enum{
  *  @param view 指定的view
  *  @param arr  模型数组
  */
-- (void)fl_showAround:(UIView *)view arr:(NSArray<NSDictionary *> *)arr;
+- (void)fl_showAround:(UIView *)view arr:(NSArray<FLAlertViewModel *> *)arr;
 /**
  *  @author 孔凡列, 16-09-03 06:09:16
  *

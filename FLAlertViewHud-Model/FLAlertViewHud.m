@@ -4,7 +4,7 @@
 //
 //  Created by clarence on 16/9/2.
 //  Copyright © 2016年 clarence. All rights reserved.
-//
+//  思路解释 ：http://www.jianshu.com/p/ca59771ee382
 
 #import "FLAlertViewHud.h"
 #define FLScreenHeight [UIScreen mainScreen].bounds.size.height
@@ -278,7 +278,7 @@ static FLAlertViewHud *instance = nil;
     [self fl_show:y arr:nil];
 }
 
-- (void)fl_show:(CGFloat)y arr:(NSArray<NSDictionary *> *)arr{
+- (void)fl_show:(CGFloat)y arr:(NSArray<FLAlertViewModel *> *)arr{
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     CGFloat leftWidth = 10;
     self.alertView = [[FLAlertView alloc] initWithFrame: CGRectMake(FLScreenWidth - 2 * leftWidth, y, FLScreenWidth - 2 * leftWidth, arr ? arr.count * FLTableViewCellHeight : FLDefaultTableViewHeight)];
@@ -287,7 +287,10 @@ static FLAlertViewHud *instance = nil;
     self.alertView.layer.masksToBounds = YES;
     
     if (arr) {
-        NSAssert([arr.lastObject isKindOfClass:[FLAlertViewModel class]], @"请保证数组的元素都是FLAlertViewModel 对象");
+        for (id obj in arr) {
+            NSAssert([obj isKindOfClass:[FLAlertViewModel class]], @"请保证数组的元素都是FLAlertViewModel 对象");
+        }
+        
         for (FLAlertViewModel *model in arr) {
             [self.alertView.dataArrM addObject:model];
         }
@@ -334,7 +337,7 @@ static FLAlertViewHud *instance = nil;
     [self fl_showAround:view arr:nil];
 }
 
-- (void)fl_showAround:(UIView *)view arr:(NSArray<NSDictionary *> *)arr{
+- (void)fl_showAround:(UIView *)view arr:(NSArray<FLAlertViewModel *> *)arr{
     CGRect rect = [view convertRect:view.frame toView:[UIApplication sharedApplication].keyWindow];
     CGFloat padding = FLScreenHeight - rect.origin.y;
     CGFloat y = 0.0;

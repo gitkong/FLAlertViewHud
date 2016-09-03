@@ -280,7 +280,9 @@ static FLAlertViewHud *instance = nil;
     self.alertView.layer.masksToBounds = YES;
     
     if (arr) {
-        NSAssert([arr.lastObject isKindOfClass:[NSDictionary class]], @"请保证数组的元素都是NSDictionary对象");
+        for (id obj in arr) {
+            NSAssert([obj isKindOfClass:[NSDictionary class]], @"请保证数组的元素都是NSDictionary对象");
+        }
         for (NSDictionary *dict in arr) {
             [self.alertView.dataArrM addObject:dict];
         }
@@ -344,7 +346,7 @@ static FLAlertViewHud *instance = nil;
     
 }
 
-#pragma mark - UIGestureRecognizerDelegate
+#pragma mark - UIGestureRecognizerDelegate 可以不实现
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
