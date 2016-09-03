@@ -7,21 +7,47 @@
 //
 
 #import "FLAlertViewHud.h"
-
-NSString * const FLAlertViewHudLeftImageKey = @"FLAlertViewHudLeftImageKey";
-NSString * const FLAlertViewHudTitleLabelKey = @"FLAlertViewHudTitleLabelKey";
-NSString * const FLAlertViewHudCellTypeKey = @"FLAlertViewHudCellTypeKey";
-
 #define FLScreenHeight [UIScreen mainScreen].bounds.size.height
 #define FLScreenWidth [UIScreen mainScreen].bounds.size.width
 #define FLDefaultTableViewHeight 2 * FLTableViewCellHeight
+
+@implementation FLAlertViewModel
+
+- (instancetype)init{
+    if (self = [super init]) {
+        // 默认
+        self.fl_titleName = @"小咧咧";
+        self.fl_leftImageName = @"";
+        self.fl_alertViewHudCellType = FLAlertViewHudCellTypeNormal;
+    }
+    return self;
+}
+
++ (instancetype)fl_alertViewModelWithTitleName:(NSString *)titleName leftImageName:(NSString *)leftImageName{
+    return [self fl_alertViewModelWithTitleName:titleName leftImageName:leftImageName alertViewCellType:FLAlertViewHudCellTypeNormal];
+}
+
++ (instancetype)fl_alertViewModelWithTitleName:(NSString *)titleName leftImageName:(NSString *)leftImageName alertViewCellType:(FLAlertViewHudCellType)alertViewCellType{
+    FLAlertViewModel *model = [[self alloc] init];
+    model.fl_titleName = titleName;
+    model.fl_leftImageName = leftImageName;
+    if (alertViewCellType) {
+        model.fl_alertViewHudCellType = alertViewCellType;
+    }
+    else{
+        model.fl_alertViewHudCellType = FLAlertViewHudCellTypeNormal;
+    }
+    return model;
+}
+
+@end
+
 @interface FLAlertViewNormalCell : UITableViewCell
 // left image view
 @property (nonatomic,strong)UIImageView *leftIamgeView;
 // title view
 @property (nonatomic,strong)UILabel *titleLab;
 
-@property (nonatomic,copy)void(^fl_normalCellOperationBlock)();
 @end
 
 @implementation FLAlertViewNormalCell
@@ -67,7 +93,8 @@ NSString * const FLAlertViewHudCellTypeKey = @"FLAlertViewHudCellTypeKey";
 
 @property (nonatomic,weak)id<FLAlertViewShareCellDelegate> delegate;
 
-@property (nonatomic,copy)void(^fl_shareCellOperationBlock)(NSInteger index);
+@property (nonatomic,strong)FLAlertViewModel *alertViewModel;
+
 @end
 
 @implementation FLAlertViewShareCell
@@ -81,7 +108,7 @@ NSString * const FLAlertViewHudCellTypeKey = @"FLAlertViewHudCellTypeKey";
             shareBtn.tag = index;
             shareBtn.backgroundColor = [UIColor orangeColor];
             [shareBtn addTarget:self action:@selector(btnClick:) forControlEvents:UIControlEventTouchUpInside];
-            [self addSubview:shareBtn];
+            
             [self.shareButtonArrM addObject:shareBtn];
         }
     }
@@ -112,6 +139,24 @@ NSString * const FLAlertViewHudCellTypeKey = @"FLAlertViewHudCellTypeKey";
 }
 
 #pragma mark - setter & getter
+
+- (void)setAlertViewModel:(FLAlertViewModel *)alertViewModel{
+    _alertViewModel = alertViewModel;
+    if (alertViewModel.fl_alertViewHudCellType == FLAlertViewHudCellTypeShare) {
+        for (UIButton *shareBtn in self.shareButtonArrM) {
+            [self addSubview:shareBtn];
+        }
+    }
+    else if (alertViewModel.fl_alertViewHudCellType == FLAlertViewHudCellTypeNormal){
+        for (UIButton *shareBtn in self.shareButtonArrM) {
+            [shareBtn removeFromSuperview];
+        }
+    }
+    
+    self.leftIamgeView.image = [UIImage imageNamed:alertViewModel.fl_leftImageName];
+    self.titleLab.text = alertViewModel.fl_titleName;
+}
+
 - (NSMutableArray *)shareButtonArrM{
     if (_shareButtonArrM == nil) {
         _shareButtonArrM = [NSMutableArray array];
@@ -169,60 +214,22 @@ NSString * const FLAlertViewHudCellTypeKey = @"FLAlertViewHudCellTypeKey";
  *  设置cell的数据
  */
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
-    NSDictionary *dict = self.dataArrM[indexPath.row];
-    
-    NSNumber *number = dict[FLAlertViewHudCellTypeKey];
-    if (number == nil) {// 如果没有，就创建默认的
-        FLAlertViewNormalCell *cell = [[FLAlertViewNormalCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FLAlertViewNormalCellReuseId"];
-        NSDictionary *dict = self.dataArrM[indexPath.row];
-        NSString *imageName = dict[FLAlertViewHudLeftImageKey];
-        NSString *title = dict[FLAlertViewHudTitleLabelKey];
-        cell.leftIamgeView.image = [UIImage imageNamed:imageName];
-        cell.titleLab.text = title;
-        return cell;
-    }
-    switch (number.integerValue) {
-        case 0:{
-            FLAlertViewShareCell *cell = [[FLAlertViewShareCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FLAlertViewShareCellReuseId"];
-            NSDictionary *dict = self.dataArrM[indexPath.row];
-            NSString *imageName = dict[FLAlertViewHudLeftImageKey];
-            NSString *title = dict[FLAlertViewHudTitleLabelKey];
-            cell.leftIamgeView.image = [UIImage imageNamed:imageName];
-            cell.titleLab.text = title;
-            cell.delegate = self;
-            return cell;
-        }
-            break;
-        case 1:{
-            FLAlertViewNormalCell *cell = [[FLAlertViewNormalCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FLAlertViewNormalCellReuseId"];
-            NSDictionary *dict = self.dataArrM[indexPath.row];
-            NSString *imageName = dict[FLAlertViewHudLeftImageKey];
-            NSString *title = dict[FLAlertViewHudTitleLabelKey];
-            cell.leftIamgeView.image = [UIImage imageNamed:imageName];
-            cell.titleLab.text = title;
-            return cell;
-        }
-            break;
-        default:
-            return nil;
-            break;
-    }
-    
+    FLAlertViewShareCell *cell = [[FLAlertViewShareCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FLAlertViewShareCellReuseId"];
+    cell.alertViewModel = self.dataArrM[indexPath.row];
+    cell.delegate = self;
+    return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    return FLDefaultTableViewHeight / self.dataArrM.count;
     return FLTableViewCellHeight;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    // 先判断父类
-    if ([cell isKindOfClass:[FLAlertViewShareCell class]]) {
+    FLAlertViewModel *model = self.dataArrM[indexPath.row];
+    if (model.fl_alertViewHudCellType == FLAlertViewHudCellTypeShare) {
         
     }
-    else{
+    else if (model.fl_alertViewHudCellType == FLAlertViewHudCellTypeNormal){
         if ([self.delegate respondsToSelector:@selector(normalCellDidClick:alertView:)]) {
             [self.delegate normalCellDidClick:indexPath.row alertView:self];
         }
@@ -280,15 +287,16 @@ static FLAlertViewHud *instance = nil;
     self.alertView.layer.masksToBounds = YES;
     
     if (arr) {
-        NSAssert([arr.lastObject isKindOfClass:[NSDictionary class]], @"请保证数组的元素都是NSDictionary对象");
-        for (NSDictionary *dict in arr) {
-            [self.alertView.dataArrM addObject:dict];
+        NSAssert([arr.lastObject isKindOfClass:[FLAlertViewModel class]], @"请保证数组的元素都是FLAlertViewModel 对象");
+        for (FLAlertViewModel *model in arr) {
+            [self.alertView.dataArrM addObject:model];
         }
     }
     else{
         // 默认两个
-        [self.alertView.dataArrM addObject:@{FLAlertViewHudLeftImageKey : @"Snip20160903_4",FLAlertViewHudTitleLabelKey : @"分享",FLAlertViewHudCellTypeKey : @(FLAlertViewHudCellTypeShare)}];
-        [self.alertView.dataArrM addObject:@{FLAlertViewHudLeftImageKey : @"Icon-50",FLAlertViewHudTitleLabelKey : @"删除"}];
+        [self.alertView.dataArrM addObjectsFromArray:@[
+                                                       [FLAlertViewModel fl_alertViewModelWithTitleName:@"分享" leftImageName:@"Snip20160903_4" alertViewCellType:FLAlertViewHudCellTypeShare],[FLAlertViewModel fl_alertViewModelWithTitleName:@"删除" leftImageName:@"Snip20160903_5"]
+                                                       ]];
     }
     [self.alertView.tableView reloadData];
     
@@ -344,7 +352,7 @@ static FLAlertViewHud *instance = nil;
     
 }
 
-#pragma mark - UIGestureRecognizerDelegate
+#pragma mark - UIGestureRecognizerDelegate 可以不实现
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
     if ([NSStringFromClass([touch.view class]) isEqualToString:@"UITableViewCellContentView"]) {
